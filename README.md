@@ -7,8 +7,8 @@
 • **(NEW)** Реализован функционал: пользователь может задавать свой набор символов для создания ASCII-арта из отправленного изображения.  
 
 ### Скриншот начала работы бота:
-![img01](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n001.jpg?raw=true)
+![img01](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n001.JPG?raw=true)
 ### Пикселизация изображения:
-![img02](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n002.jpg?raw=true)
+![img02](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n002.JPG?raw=true)
 ### Преобразование в ASCII-арт:
-![img03](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n003.jpg?raw=true)
+![img03](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n003.JPG?raw=true)
