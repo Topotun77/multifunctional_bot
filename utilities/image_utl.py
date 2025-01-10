@@ -64,7 +64,6 @@ def pixels_to_ascii(image: Image.Image, ascii_ch=ASCII_CHARS) -> str:
     return characters
 
 
-# Огрубляем изображение
 def pixelate_image(image: Image.Image, pixel_size: int) -> Image.Image:
     """
     Уменьшает изображение до размера, где один пиксель представляет большую область,
