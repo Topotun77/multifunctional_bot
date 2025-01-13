@@ -22,19 +22,42 @@ def get_image(message: Message, bot: telebot.TeleBot) -> io.BytesIO:
     return image_stream
 
 
-def pixelate_and_send(message: Message, bot: telebot.TeleBot):
+def send_image(message: Message, bot: telebot.TeleBot, image: Image.Image):
+    """
+    Отправить измененное изображение
+    :param message: Message
+    :param bot: telebot.TeleBot
+    :param image: Изображение для отправки
+    :return: io.BytesIO
+    """
+    output_stream = io.BytesIO()
+    image.save(output_stream, format='JPEG')
+    output_stream.seek(0)
+    bot.send_photo(message.chat.id, output_stream)
+
+
+def pixelate_and_send(message: Message, bot: telebot.TeleBot, pixel_size=20):
     """
     Пикселизует изображение и отправляет его обратно пользователю.
     """
     image_stream = get_image(message, bot)
 
     image = Image.open(image_stream)
-    pixelated = pixelate_image(image, 20)
+    pixelated = pixelate_image(image, pixel_size=pixel_size)
 
-    output_stream = io.BytesIO()
-    pixelated.save(output_stream, format='JPEG')
-    output_stream.seek(0)
-    bot.send_photo(message.chat.id, output_stream)
+    send_image(message, bot, pixelated)
+
+
+def mirror_and_send(message: Message, bot: telebot.TeleBot, method: Image.Transpose = 1):
+    """
+    Отражает изображение и отправляет его обратно пользователю.
+    """
+    image_stream = get_image(message, bot)
+
+    image = Image.open(image_stream)
+    mirror = image.transpose(method=method)
+
+    send_image(message, bot, mirror)
 
 
 def invert_and_send(message: Message, bot: telebot.TeleBot):
@@ -46,10 +69,19 @@ def invert_and_send(message: Message, bot: telebot.TeleBot):
     image = Image.open(image_stream)
     invert = ImageOps.invert(image)
 
-    output_stream = io.BytesIO()
-    invert.save(output_stream, format='JPEG')
-    output_stream.seek(0)
-    bot.send_photo(message.chat.id, output_stream)
+    send_image(message, bot, invert)
+
+
+def solarize_and_send(message: Message, bot: telebot.TeleBot):
+    """
+    Соляризация изображения и отправка его обратно пользователю.
+    """
+    image_stream = get_image(message, bot)
+
+    image = Image.open(image_stream)
+    solarize = ImageOps.solarize(image)
+
+    send_image(message, bot, solarize)
 
 
 def ascii_and_send(call: CallbackQuery, bot: telebot.TeleBot):
