@@ -28,6 +28,7 @@ PIXEL_DICT = {
     'p_50': 50,
 }
 
+# Словарь методов отражения изображения для клавиатуры
 MIRROR_DICT = {
     f'm_{Transpose.FLIP_LEFT_RIGHT}': 'Горизонтальное',
     f'm_{Transpose.FLIP_TOP_BOTTOM}': 'Вертикальное',
