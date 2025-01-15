@@ -7,9 +7,11 @@
 • Реализован функционал: пользователь может задавать свой набор символов для создания ASCII-арта из отправленного изображения.  
 • Изменена структура модулей.  
 • Добавлена инверсия изображения.  
-• **(NEW)** Добавлена соляризация изображения.  
-• **(NEW)** Добавлена возможность выбора размера пикселя для пикселизации. Список размеров пикселей хранится в файле настроек.  
-• **(NEW)** Добавлена возможность отражения изображения по горизонтали, вертикали и поворот изображения.  
+• Добавлена соляризация изображения.  
+• Добавлена возможность выбора размера пикселя для пикселизации. Список размеров пикселей хранится в файле настроек.  
+• Добавлена возможность отражения изображения по горизонтали, вертикали и поворот изображения.  
+• **(NEW)** Преобразование в тепловую карту двумя методами.  
+• **(NEW)** Преобразование в градации серого.  
 
 ### Скриншот начала работы бота:
 ![img01](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n001.JPG?raw=true)
@@ -25,3 +27,9 @@
 ![img06](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n006.JPG?raw=true)
 ### Поворот изображения на 90 градусов:
 ![img07](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n007.JPG?raw=true)
+### Тепловая карта:
+![img08](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n010.JPG?raw=true)
+### Тепловая карта версии 2:
+![img09](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n011.JPG?raw=true)
+### Градации серого:
+![img10](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n009.JPG?raw=true)

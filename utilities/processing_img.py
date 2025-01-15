@@ -5,7 +5,7 @@ from PIL import Image, ImageOps
 from telebot.types import Message, CallbackQuery
 
 from settings import user_states
-from .image_utl import pixelate_image, image_to_ascii
+from .image_utl import pixelate_image, image_to_ascii, convert_to_heatmap, grayscale, convert_to_heatmap_v2
 
 
 def get_image(message: Message, bot: telebot.TeleBot) -> io.BytesIO:
@@ -70,6 +70,42 @@ def invert_and_send(message: Message, bot: telebot.TeleBot):
     invert = ImageOps.invert(image)
 
     send_image(message, bot, invert)
+
+
+def heatmap_and_send(message: Message, bot: telebot.TeleBot):
+    """
+    Преобразует в тепловую карту изображение и отправляет его обратно пользователю.
+    """
+    image_stream = get_image(message, bot)
+
+    image = Image.open(image_stream)
+    heatmap = convert_to_heatmap(image)
+
+    send_image(message, bot, heatmap)
+
+
+def heatmap_v2_and_send(message: Message, bot: telebot.TeleBot):
+    """
+    Преобразует в тепловую карту изображение и отправляет его обратно пользователю.
+    """
+    image_stream = get_image(message, bot)
+
+    image = Image.open(image_stream)
+    heatmap = convert_to_heatmap_v2(image)
+
+    send_image(message, bot, heatmap)
+
+
+def grayscale_and_send(message: Message, bot: telebot.TeleBot):
+    """
+    Преобразует в тепловую карту изображение и отправляет его обратно пользователю.
+    """
+    image_stream = get_image(message, bot)
+
+    image = Image.open(image_stream)
+    heatmap = grayscale(image)
+
+    send_image(message, bot, heatmap)
 
 
 def solarize_and_send(message: Message, bot: telebot.TeleBot):

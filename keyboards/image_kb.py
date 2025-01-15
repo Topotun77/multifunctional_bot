@@ -13,11 +13,15 @@ def get_options_keyboard():
     ascii_btn = types.InlineKeyboardButton("ASCII-Арт", callback_data="ascii")
     invert_colors_btn = types.InlineKeyboardButton("Инвертировать", callback_data="invert")
     mirror_btn = types.InlineKeyboardButton("Отразить", callback_data="mirror")
-    keyboard.add(pixelate_btn, ascii_btn, invert_colors_btn, solarize_btn, mirror_btn)
+    heatmap_btn = types.InlineKeyboardButton("Тепловая карта", callback_data="heatmap")
+    heatmap_v2_btn = types.InlineKeyboardButton("Тепловая карта V2", callback_data="heatmap_v2")
+    grayscale_btn = types.InlineKeyboardButton("Градации серого", callback_data="grayscale")
+    keyboard.add(pixelate_btn, ascii_btn, invert_colors_btn, solarize_btn, mirror_btn,
+                 grayscale_btn, heatmap_btn, heatmap_v2_btn)
     return keyboard
 
 
-def get_pixel_keyboard_from_dict(dict_kb: dict) -> types.InlineKeyboardMarkup:
+def get_keyboard_from_dict(dict_kb: dict) -> types.InlineKeyboardMarkup:
     """
     Создает клавиатуру с кнопками из словаря dict_kb
     :param dict_kb: Словарь с клавиатурой
@@ -37,7 +41,7 @@ def get_pixel_keyboard() -> types.InlineKeyboardMarkup:
     Данные берет из словаря PIXEL_DICT
     :return: Клавиатура InlineKeyboardMarkup
     """
-    return get_pixel_keyboard_from_dict(PIXEL_DICT)
+    return get_keyboard_from_dict(PIXEL_DICT)
 
 
 def get_mirror_keyboard() -> types.InlineKeyboardMarkup:
@@ -46,4 +50,4 @@ def get_mirror_keyboard() -> types.InlineKeyboardMarkup:
     Данные берет из словаря MIRROR_DICT
     :return: Клавиатура InlineKeyboardMarkup
     """
-    return get_pixel_keyboard_from_dict(MIRROR_DICT)
+    return get_keyboard_from_dict(MIRROR_DICT)
