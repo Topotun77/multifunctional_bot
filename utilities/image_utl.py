@@ -21,6 +21,27 @@ def grayscale(image: Image.Image) -> Image.Image:
     return image.convert("L")
 
 
+def transparent(image: Image.Image, tp_pixel=None) -> Image.Image:
+    """ Устанавливаем прозрачный фон """
+    rgba = image.convert("RGBA")
+    datas = rgba.getdata()
+
+    # Прозрачный пиксел, если не указан, то верхний левый пиксел
+    if not tp_pixel:
+        tp_pixel = datas[0]
+
+    newData = []
+    for item in datas:
+        if item == tp_pixel:
+            # Меняем цвет пикселя на прозрачный
+            newData.append((255, 255, 255, 0))
+        else:
+            newData.append(item)
+
+    rgba.putdata(newData)
+    return rgba
+
+
 def image_to_ascii(image_stream, ascii_ch=ASCII_CHARS, new_width=40) -> str:
     """
     Преобразование изображение в ASCII-арт
@@ -140,7 +161,27 @@ def convert_to_heatmap_v2(image: Image.Image) -> Image.Image:
     # Переводим в оттенки серого
     image = image.convert('L')
 
-    # Создать новую пустую картинку для тепловой карты
+    # Создаем тепловую карту (синий, желтый, красный)
     image = ImageOps.colorize(image, black=(0, 0, 255), white=(255, 0, 0), mid=(255, 255, 0))
+
+    return image
+
+
+def resize_for_sticker(image: Image.Image, max_pixel=512) -> Image.Image:
+    """
+    Изменяет размер изображения, сохраняя пропорции, чтобы его максимальное измерение
+    не превышало заданного максимума (по умолчанию 512 пикселей).
+    :param image: Исходное изображение
+    :param max_pixel: Максимальное измерение в пикселях
+    :return: Преобразованное изображение
+    """
+    # Меняем размер
+    max_size = max(image.width, image.height)
+    if max_size > max_pixel:
+        # Новый размер
+        image = resize_image(image, round(image.width * (max_pixel / max_size)))
+
+    # Делаем прозрачный фон
+    image = transparent(image)
 
     return image

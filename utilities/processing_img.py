@@ -5,7 +5,8 @@ from PIL import Image, ImageOps
 from telebot.types import Message, CallbackQuery
 
 from settings import user_states
-from .image_utl import pixelate_image, image_to_ascii, convert_to_heatmap, grayscale, convert_to_heatmap_v2
+from .image_utl import (pixelate_image, image_to_ascii, convert_to_heatmap, grayscale,
+                        convert_to_heatmap_v2, resize_for_sticker)
 
 
 def get_image(message: Message, bot: telebot.TeleBot) -> io.BytesIO:
@@ -118,6 +119,22 @@ def solarize_and_send(message: Message, bot: telebot.TeleBot):
     solarize = ImageOps.solarize(image)
 
     send_image(message, bot, solarize)
+
+
+def sticker_and_send(message: Message, bot: telebot.TeleBot):
+    """
+    Стикер из изображения.
+    """
+    image_stream = get_image(message, bot)
+
+    image = Image.open(image_stream)
+    sticker = resize_for_sticker(image)
+
+    # send_image(message, bot, sticker)
+    output_stream = io.BytesIO()
+    sticker.save(output_stream, format='PNG')
+    output_stream.seek(0)
+    bot.send_sticker(message.chat.id, output_stream)
 
 
 def ascii_and_send(call: CallbackQuery, bot: telebot.TeleBot):

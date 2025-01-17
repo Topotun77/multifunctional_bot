@@ -16,8 +16,9 @@ def get_options_keyboard():
     heatmap_btn = types.InlineKeyboardButton("Тепловая карта", callback_data="heatmap")
     heatmap_v2_btn = types.InlineKeyboardButton("Тепловая карта V2", callback_data="heatmap_v2")
     grayscale_btn = types.InlineKeyboardButton("Градации серого", callback_data="grayscale")
+    sticker_btn = types.InlineKeyboardButton("Стикер", callback_data="sticker")
     keyboard.add(pixelate_btn, ascii_btn, invert_colors_btn, solarize_btn, mirror_btn,
-                 grayscale_btn, heatmap_btn, heatmap_v2_btn)
+                 grayscale_btn, heatmap_btn, heatmap_v2_btn, sticker_btn)
     return keyboard
 
 

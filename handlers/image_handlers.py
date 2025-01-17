@@ -4,7 +4,8 @@ from telebot.types import CallbackQuery, Message
 from keyboards.image_kb import get_options_keyboard, get_pixel_keyboard, get_mirror_keyboard
 from settings import ASCII_TEXT, WELCOME_TEXT, IMAGE_TEXT, user_states, ASCII_CHARS, PIXEL_DICT, MIRROR_DICT
 from utilities.processing_img import (pixelate_and_send, solarize_and_send, ascii_and_send, invert_and_send,
-                                      mirror_and_send, heatmap_and_send, grayscale_and_send, heatmap_v2_and_send)
+                                      mirror_and_send, heatmap_and_send, grayscale_and_send, heatmap_v2_and_send,
+                                      sticker_and_send)
 
 from create_bot.create_bot import bot
 
@@ -39,6 +40,9 @@ def callback_query(call: CallbackQuery):
         elif call.data == 'grayscale':
             bot.answer_callback_query(call.id, 'Преобразование градации серого...')
             grayscale_and_send(call.message, bot)
+        elif call.data == 'sticker':
+            bot.answer_callback_query(call.id, 'Формирование стикера...')
+            sticker_and_send(call.message, bot)
     except Exception as er:
         bot.send_message(call.message.chat.id, 'Ошибка. Начните все сначала.')
         raise

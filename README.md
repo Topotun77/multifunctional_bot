@@ -10,8 +10,10 @@
 • Добавлена соляризация изображения.  
 • Добавлена возможность выбора размера пикселя для пикселизации. Список размеров пикселей хранится в файле настроек.  
 • Добавлена возможность отражения изображения по горизонтали, вертикали и поворот изображения.  
-• **(NEW)** Преобразование в тепловую карту двумя методами.  
-• **(NEW)** Преобразование в градации серого.  
+• Преобразование в тепловую карту двумя методами.  
+• Преобразование в градации серого.  
+• **(NEW)** Изменение размера изображения для стикера.  
+• **(NEW)** Стикер на прозрачном фоне.  
 
 ### Скриншот начала работы бота:
 ![img01](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n001.JPG?raw=true)
@@ -33,3 +35,5 @@
 ![img09](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n011.JPG?raw=true)
 ### Градации серого:
 ![img10](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n009.JPG?raw=true)
+### Стикер на прозрачном фоне:
+![img11](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n012.JPG?raw=true)
