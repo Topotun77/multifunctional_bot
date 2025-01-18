@@ -23,18 +23,24 @@ def get_image(message: Message, bot: telebot.TeleBot) -> io.BytesIO:
     return image_stream
 
 
-def send_image(message: Message, bot: telebot.TeleBot, image: Image.Image):
+def send_image(message: Message, bot: telebot.TeleBot, image: Image.Image,
+               format_img='JPEG', sticker_send=False):
     """
     Отправить измененное изображение
     :param message: Message
     :param bot: telebot.TeleBot
     :param image: Изображение для отправки
+    :param format_img: Формат вывода
+    :param sticker_send: Отправка в виде стикера
     :return: io.BytesIO
     """
     output_stream = io.BytesIO()
-    image.save(output_stream, format='JPEG')
+    image.save(output_stream, format=format_img)
     output_stream.seek(0)
-    bot.send_photo(message.chat.id, output_stream)
+    if sticker_send:
+        bot.send_sticker(message.chat.id, output_stream)
+    else:
+        bot.send_photo(message.chat.id, output_stream)
 
 
 def pixelate_and_send(message: Message, bot: telebot.TeleBot, pixel_size=20):
@@ -130,11 +136,7 @@ def sticker_and_send(message: Message, bot: telebot.TeleBot):
     image = Image.open(image_stream)
     sticker = resize_for_sticker(image)
 
-    # send_image(message, bot, sticker)
-    output_stream = io.BytesIO()
-    sticker.save(output_stream, format='PNG')
-    output_stream.seek(0)
-    bot.send_sticker(message.chat.id, output_stream)
+    send_image(message, bot, sticker, format_img='PNG', sticker_send=True)
 
 
 def ascii_and_send(call: CallbackQuery, bot: telebot.TeleBot):
