@@ -12,8 +12,12 @@
 • Добавлена возможность отражения изображения по горизонтали, вертикали и поворот изображения.  
 • Преобразование в тепловую карту двумя методами.  
 • Преобразование в градации серого.  
-• **(NEW)** Изменение размера изображения для стикера.  
-• **(NEW)** Стикер на прозрачном фоне.  
+• Изменение размера изображения для стикера.  
+• Стикер на прозрачном фоне.  
+• **(NEW)** Добавлена случайная шутка.  
+• **(NEW)** Добавлена генерация изображения через API Kandinsky.  
+• **(NEW)** После генерации изображения открывается клавиатура с возможными манипуляциями над изображением, 
+аналогично загруженному изображению.  
 
 ### Скриншот начала работы бота:
 ![img01](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n001.JPG?raw=true)
@@ -37,3 +41,9 @@
 ![img10](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n009.JPG?raw=true)
 ### Стикер на прозрачном фоне:
 ![img11](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n012.JPG?raw=true)
+### Генерация изображения через API-Kandinsky:
+![img11](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n014.JPG?raw=true)
+### Обработка сгенерированного изображения:
+![img11](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n015.JPG?raw=true)
+### Случайная шутка:
+![img11](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n016.JPG?raw=true)

@@ -1,5 +1,5 @@
 from telebot import types
-from settings import PIXEL_DICT, MIRROR_DICT
+from settings import PIXEL_DICT, MIRROR_DICT, START_KB_DICT
 
 
 def get_options_keyboard():
@@ -34,6 +34,15 @@ def get_keyboard_from_dict(dict_kb: dict) -> types.InlineKeyboardMarkup:
         list_key.append(types.InlineKeyboardButton(v, callback_data=k))
     keyboard.add(*list_key)
     return keyboard
+
+
+def get_start_keyboard() -> types.InlineKeyboardMarkup:
+    """
+    Создает стартовую клавиатуру.
+    Данные берет из словаря START_KB_DICT
+    :return: Клавиатура InlineKeyboardMarkup
+    """
+    return get_keyboard_from_dict(START_KB_DICT)
 
 
 def get_pixel_keyboard() -> types.InlineKeyboardMarkup:

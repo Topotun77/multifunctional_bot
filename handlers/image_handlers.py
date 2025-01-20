@@ -1,13 +1,41 @@
+from random import randint
 import telebot
 from telebot.types import CallbackQuery, Message
 
-from keyboards.image_kb import get_options_keyboard, get_pixel_keyboard, get_mirror_keyboard
-from settings import ASCII_TEXT, WELCOME_TEXT, IMAGE_TEXT, user_states, ASCII_CHARS, PIXEL_DICT, MIRROR_DICT
+from keyboards.image_kb import get_options_keyboard, get_pixel_keyboard, get_mirror_keyboard, get_start_keyboard
+from settings import (ASCII_TEXT, WELCOME_TEXT, IMAGE_TEXT, user_states, ASCII_CHARS, PIXEL_DICT, JOKES,
+                      IMAGE_GEN_TEXT)
 from utilities.processing_img import (pixelate_and_send, solarize_and_send, ascii_and_send, invert_and_send,
                                       mirror_and_send, heatmap_and_send, grayscale_and_send, heatmap_v2_and_send,
-                                      sticker_and_send)
+                                      sticker_and_send, generate_and_send)
 
 from create_bot.create_bot import bot
+
+
+def start_query(call: CallbackQuery):
+    """
+    Определяет действия в ответ на выбор пользователя при старте
+    bot.callback_query_handler(func=lambda call: call.data in START_KB_DICT)(start_query)
+    """
+    try:
+        if call.data == 'joke':
+            bot.send_message(call.message.chat.id, text=JOKES[randint(0, len(JOKES)-1)],
+                             parse_mode='HTML')
+        elif call.data == 'gen_image':
+            msg = bot.send_message(call.message.chat.id, IMAGE_GEN_TEXT, parse_mode='HTML')
+            bot.register_next_step_handler(msg, gen_step2, call, bot)
+    except Exception as er:
+        bot.send_message(call.message.chat.id, 'Ошибка. Начните все сначала.')
+
+
+def gen_step2(message: Message, call: CallbackQuery, bot: telebot.TeleBot):
+    """
+    Шаг 2: обработка запроса текста для генерации картинки.
+    """
+    bot.send_message(call.message.chat.id, '⏳ <b>Идет генерация картинки.</b>\nЭто может занять несколько минут.',
+                     parse_mode='HTML')
+
+    generate_and_send(message, bot)
 
 
 def callback_query(call: CallbackQuery):
@@ -51,6 +79,7 @@ def callback_query(call: CallbackQuery):
 def pixel_query(call: CallbackQuery):
     """
     Определяет размер пикселя
+    bot.callback_query_handler(func=lambda call: call.data in PIXEL_DICT)(pixel_query)
     """
     try:
         bot.answer_callback_query(call.id, 'Пикселизация вашего изображения...')
@@ -63,6 +92,7 @@ def pixel_query(call: CallbackQuery):
 def mirror_query(call: CallbackQuery):
     """
     Определяет тип зеркального отражения
+    bot.callback_query_handler(func=lambda call: call.data in MIRROR_DICT)(mirror_query)
     """
     try:
         bot.answer_callback_query(call.id, 'Отражение вашего изображения...')
@@ -91,7 +121,7 @@ def send_welcome(message: Message):
     Обработчик приветствия
     bot.message_handler(commands=['start', 'help'])
     """
-    bot.reply_to(message, WELCOME_TEXT, parse_mode='HTML')
+    bot.reply_to(message, WELCOME_TEXT, parse_mode='HTML', reply_markup=get_start_keyboard())
 
 
 def handle_photo(message: Message):

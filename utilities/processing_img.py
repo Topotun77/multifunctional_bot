@@ -1,3 +1,4 @@
+import asyncio
 import io
 
 import telebot
@@ -7,6 +8,8 @@ from telebot.types import Message, CallbackQuery
 from settings import user_states
 from .image_utl import (pixelate_image, image_to_ascii, convert_to_heatmap, grayscale,
                         convert_to_heatmap_v2, resize_for_sticker)
+from keyboards.image_kb import get_options_keyboard
+from .kandinsky import gen
 
 
 def get_image(message: Message, bot: telebot.TeleBot) -> io.BytesIO:
@@ -23,19 +26,46 @@ def get_image(message: Message, bot: telebot.TeleBot) -> io.BytesIO:
     return image_stream
 
 
-def send_image(message: Message, bot: telebot.TeleBot, image: Image.Image):
+def send_image(message: Message, bot: telebot.TeleBot, image: Image.Image,
+               format_img='JPEG', sticker_send=False):
     """
     Отправить измененное изображение
     :param message: Message
     :param bot: telebot.TeleBot
     :param image: Изображение для отправки
+    :param format_img: Формат вывода
+    :param sticker_send: Отправка в виде стикера
     :return: io.BytesIO
     """
     output_stream = io.BytesIO()
-    image.save(output_stream, format='JPEG')
+    image.save(output_stream, format=format_img)
     output_stream.seek(0)
-    bot.send_photo(message.chat.id, output_stream)
+    if sticker_send:
+        bot.send_sticker(message.chat.id, output_stream)
+    else:
+        bot.send_photo(message.chat.id, output_stream)
 
+
+def generate_and_send(message: Message, bot: telebot.TeleBot):
+    """
+    Сгенерировать изображение через API Kamdinsky и отправить пользователю.
+    """
+    try:
+        image = asyncio.run(gen(message.text.replace("\n", " ")))
+    except Exception as er:
+        print(f'Ошибка: {er.args}')
+        return
+
+    # Создаем файловый объект из байтовых данных
+    image_file = io.BytesIO(image)
+
+    # Открываем изображение с помощью Pillow
+    image_out = Image.open(image_file)
+
+    msg = bot.send_photo(message.chat.id, image_out, reply_markup=get_options_keyboard())
+
+    # Добавить картинку в user_states
+    user_states[message.chat.id] = {'photo': msg.photo[-1].file_id}
 
 def pixelate_and_send(message: Message, bot: telebot.TeleBot, pixel_size=20):
     """
@@ -130,11 +160,7 @@ def sticker_and_send(message: Message, bot: telebot.TeleBot):
     image = Image.open(image_stream)
     sticker = resize_for_sticker(image)
 
-    # send_image(message, bot, sticker)
-    output_stream = io.BytesIO()
-    sticker.save(output_stream, format='PNG')
-    output_stream.seek(0)
-    bot.send_sticker(message.chat.id, output_stream)
+    send_image(message, bot, sticker, format_img='PNG', sticker_send=True)
 
 
 def ascii_and_send(call: CallbackQuery, bot: telebot.TeleBot):
@@ -145,5 +171,3 @@ def ascii_and_send(call: CallbackQuery, bot: telebot.TeleBot):
 
     ascii_art = image_to_ascii(image_stream, ascii_ch=user_states[call.message.chat.id]['ascii'])
     bot.send_message(call.message.chat.id, f"```\n{ascii_art}\n```", parse_mode='MarkdownV2')
-
-
