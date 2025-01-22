@@ -21,8 +21,25 @@ def grayscale(image: Image.Image) -> Image.Image:
     return image.convert("L")
 
 
-def transparent(image: Image.Image, tp_pixel=None) -> Image.Image:
-    """ Устанавливаем прозрачный фон """
+def transparent(image: Image.Image, tp_pixel=None, allowance=2) -> Image.Image:
+    """
+    Устанавливаем прозрачный фон
+    :param image: Изображение для обработки
+    :param tp_pixel: Прозрачный пиксель. По умолчанию левый верхний угол
+    :param allowance: допуск разброса по прозрачному цвету
+    :return: Обработанное изображение - стикер Image
+    """
+    def is_transparent(pixel) -> bool:
+        """
+        Проверка на близость к прозрачному цвету
+        :param pixel: Пиксель для проверки
+        :return: Истина/ложь
+        """
+        for i in range(3):
+            if abs(tp_pixel[i] - pixel[i]) > allowance:
+                return False
+        return True
+
     rgba = image.convert("RGBA")
     datas = rgba.getdata()
 
@@ -32,7 +49,7 @@ def transparent(image: Image.Image, tp_pixel=None) -> Image.Image:
 
     newData = []
     for item in datas:
-        if item == tp_pixel:
+        if is_transparent(item):
             # Меняем цвет пикселя на прозрачный
             newData.append((255, 255, 255, 0))
         else:
@@ -167,12 +184,13 @@ def convert_to_heatmap_v2(image: Image.Image) -> Image.Image:
     return image
 
 
-def resize_for_sticker(image: Image.Image, max_pixel=512) -> Image.Image:
+def resize_for_sticker(image: Image.Image, max_pixel=512, allowance=2) -> Image.Image:
     """
     Изменяет размер изображения, сохраняя пропорции, чтобы его максимальное измерение
     не превышало заданного максимума (по умолчанию 512 пикселей).
     :param image: Исходное изображение
     :param max_pixel: Максимальное измерение в пикселях
+    :param allowance: допуск разброса по прозрачному цвету
     :return: Преобразованное изображение
     """
     # Меняем размер
@@ -182,6 +200,6 @@ def resize_for_sticker(image: Image.Image, max_pixel=512) -> Image.Image:
         image = resize_image(image, round(image.width * (max_pixel / max_size)))
 
     # Делаем прозрачный фон
-    image = transparent(image)
+    image = transparent(image, allowance=allowance)
 
     return image

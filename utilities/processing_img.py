@@ -51,7 +51,7 @@ def generate_and_send(message: Message, bot: telebot.TeleBot):
     Сгенерировать изображение через API Kamdinsky и отправить пользователю.
     """
     try:
-        image = asyncio.run(gen(message.text.replace("\n", " ")))
+        image = asyncio.run(gen(message.text.replace("\n", " "), attempts=20))
     except Exception as er:
         print(f'Ошибка: {er.args}')
         return
@@ -151,14 +151,17 @@ def solarize_and_send(message: Message, bot: telebot.TeleBot):
     send_image(message, bot, solarize)
 
 
-def sticker_and_send(message: Message, bot: telebot.TeleBot):
+def sticker_and_send(message: Message, bot: telebot.TeleBot, allowance=2):
     """
     Стикер из изображения.
+    :param message: Message
+    :param bot: TeleBot
+    :param allowance: допуск разброса по прозрачному цвету
     """
     image_stream = get_image(message, bot)
 
     image = Image.open(image_stream)
-    sticker = resize_for_sticker(image)
+    sticker = resize_for_sticker(image, allowance=allowance)
 
     send_image(message, bot, sticker, format_img='PNG', sticker_send=True)
 

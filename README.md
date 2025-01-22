@@ -14,13 +14,27 @@
 • Преобразование в градации серого.  
 • Изменение размера изображения для стикера.  
 • Стикер на прозрачном фоне.  
-• **(NEW)** Добавлена случайная шутка.  
-• **(NEW)** Добавлена генерация изображения через API Kandinsky.  
-• **(NEW)** После генерации изображения открывается клавиатура с возможными манипуляциями над изображением, 
+• Добавлена случайная шутка.  
+• Добавлена генерация изображения через API Kandinsky.  
+• После генерации изображения открывается клавиатура с возможными манипуляциями над изображением, 
 аналогично загруженному изображению.  
+• **(NEW)** Стартовая инлайн-клавиатура заменена на reply-клавиатуру. 
+Оставлена возможность использовать стартовую инлайн-клавиатуру.  
+• **(NEW)** Реализован выбор допуска прозрачного цвета для стикеров.  
+• **(NEW)** Добавлена возможность получить случайный комплимент.  
+• **(NEW)** Шутку и комплимент теперь можно получить не только из меню, но и по командам `/joke` и `/compliment` соответственно. 
+Также добавлена команда `/gen_image` для генерации изображения.  
+• **(NEW)** Добавлена команда отмены при генерации изображения, если пользователь передумал что-то генерировать.  
 
 ### Скриншот начала работы бота:
 ![img01](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n001.JPG?raw=true)
+### Генерация изображения через API-Kandinsky:
+![img12](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n014.JPG?raw=true)
+### Обработка сгенерированного изображения:
+![img13](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n015.JPG?raw=true)
+### Выбор допусков по прозрачному фону для стикера:
+![img14](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n017.JPG?raw=true)
+![img15](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n018.JPG?raw=true)
 ### Пикселизация изображения с выбором размера пикселя:
 ![img02](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n002.JPG?raw=true)
 ### Преобразование в ASCII-арт:
@@ -41,9 +55,5 @@
 ![img10](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n009.JPG?raw=true)
 ### Стикер на прозрачном фоне:
 ![img11](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n012.JPG?raw=true)
-### Генерация изображения через API-Kandinsky:
-![img11](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n014.JPG?raw=true)
-### Обработка сгенерированного изображения:
-![img11](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n015.JPG?raw=true)
-### Случайная шутка:
-![img11](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n016.JPG?raw=true)
+### Случайная шутка и случайный комплимент:
+![img16](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n016.JPG?raw=true)

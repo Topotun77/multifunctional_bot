@@ -6,4 +6,9 @@ register_handlers(bot)
 
 
 if __name__ == '__main__':
-    bot.polling(none_stop=True)
+    while True:
+        try:
+            bot.polling(none_stop=True)
+
+        except ConnectionError as e:
+            print(f'Connection Error: {e.args}')

@@ -75,9 +75,10 @@ class Text2ImageAPI:
             await asyncio.sleep(delay)
 
 
-async def gen(prom: str):
+async def gen(prom: str, attempts=10):
     """
     Генерация картинки через API Kandinsky
+    :param attempts: Количество попыток проверки
     :param prom: Строка запроса для генерации изображения
     :return: Полное имя файла, куда была сохранена картинка
     """
@@ -86,7 +87,7 @@ async def gen(prom: str):
     api = Text2ImageAPI('https://api-key.fusionbrain.ai/', API_KEY, SECRET_KEY)
     model_id = api.get_model()
     uuid = api.generate(prom, model_id)
-    images = await api.check_generation(uuid)
+    images = await api.check_generation(uuid, attempts=attempts)
 
     # Здесь image_base64 - это строка с данными изображения в формате base64
     image_base64 = images[0]

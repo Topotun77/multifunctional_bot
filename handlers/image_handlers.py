@@ -2,39 +2,61 @@ from random import randint
 import telebot
 from telebot.types import CallbackQuery, Message
 
-from keyboards.image_kb import get_options_keyboard, get_pixel_keyboard, get_mirror_keyboard, get_start_keyboard
-from settings import (ASCII_TEXT, WELCOME_TEXT, IMAGE_TEXT, user_states, ASCII_CHARS, PIXEL_DICT, JOKES,
-                      IMAGE_GEN_TEXT)
-from utilities.processing_img import (pixelate_and_send, solarize_and_send, ascii_and_send, invert_and_send,
-                                      mirror_and_send, heatmap_and_send, grayscale_and_send, heatmap_v2_and_send,
-                                      sticker_and_send, generate_and_send)
+from keyboards.image_kb import get_options_keyboard
+from keyboards.generate_kb import get_reply_keyboard_from_dict, get_inline_keyboard_from_dict
+from settings import (
+    ASCII_TEXT, WELCOME_TEXT, IMAGE_TEXT, user_states, ASCII_CHARS, PIXEL_DICT, JOKES,
+    IMAGE_GEN_TEXT, ERROR_TEXT, START_KB_DICT, MIRROR_DICT, TRANSPARENT_DICT, TRANSPARENT_TEXT,
+    UNDERSTAND_TEXT, COMPLIMENTS, FRAME_COMPLIMENTS, CANCEL_TEXT
+)
+from utilities.processing_img import (
+    pixelate_and_send, solarize_and_send, ascii_and_send, invert_and_send, mirror_and_send,
+    heatmap_and_send, grayscale_and_send, heatmap_v2_and_send, sticker_and_send, generate_and_send
+)
 
 from create_bot.create_bot import bot
 
 
-def start_query(call: CallbackQuery):
+def start_query(call: CallbackQuery | Message):
     """
     Определяет действия в ответ на выбор пользователя при старте
     bot.callback_query_handler(func=lambda call: call.data in START_KB_DICT)(start_query)
     """
+    # Для разрешения проблемы типов данных Reply и Inline клавиатур
+    if type(call) == CallbackQuery:
+        message=call.message
+        text=START_KB_DICT[call.data]
+    else:
+        message=call
+        text=message.text
+        # В случае, если была команда, начинающаяся со '/'
+        if text[0] == '/':
+            text = START_KB_DICT[text[1:]]
     try:
-        if call.data == 'joke':
-            bot.send_message(call.message.chat.id, text=JOKES[randint(0, len(JOKES)-1)],
+        if text == START_KB_DICT['joke']:
+            bot.send_message(message.chat.id, text=JOKES[randint(0, len(JOKES)-1)],
                              parse_mode='HTML')
-        elif call.data == 'gen_image':
-            msg = bot.send_message(call.message.chat.id, IMAGE_GEN_TEXT, parse_mode='HTML')
-            bot.register_next_step_handler(msg, gen_step2, call, bot)
+        elif text == START_KB_DICT['compliment']:
+            comp = (FRAME_COMPLIMENTS + '<b>' +
+                    COMPLIMENTS[randint(0, len(COMPLIMENTS) - 1)] +
+                    '</b>' + FRAME_COMPLIMENTS)
+            bot.send_message(message.chat.id, text=comp, parse_mode='HTML')
+        elif text == START_KB_DICT['gen_image']:
+            msg = bot.send_message(message.chat.id, IMAGE_GEN_TEXT, parse_mode='HTML')
+            bot.register_next_step_handler(msg, gen_step2, message, bot)
     except Exception as er:
-        bot.send_message(call.message.chat.id, 'Ошибка. Начните все сначала.')
+        bot.send_message(message.chat.id, ERROR_TEXT)
 
 
-def gen_step2(message: Message, call: CallbackQuery, bot: telebot.TeleBot):
+def gen_step2(message: Message, msg: Message, bot: telebot.TeleBot):
     """
     Шаг 2: обработка запроса текста для генерации картинки.
     """
-    bot.send_message(call.message.chat.id, '⏳ <b>Идет генерация картинки.</b>\nЭто может занять несколько минут.',
+    if message.text == '/cancel':
+        bot.send_message(msg.chat.id, CANCEL_TEXT, parse_mode='HTML')
+        return
+    bot.send_message(msg.chat.id, '⏳ <b>Идет генерация картинки.</b>\nЭто может занять несколько минут.',
                      parse_mode='HTML')
-
     generate_and_send(message, bot)
 
 
@@ -46,10 +68,10 @@ def callback_query(call: CallbackQuery):
     try:
         if call.data == 'pixelate':
             bot.send_message(call.message.chat.id, '👇 Выберите размер пикселя 👇', parse_mode='HTML',
-                             reply_markup=get_pixel_keyboard())
+                             reply_markup=get_inline_keyboard_from_dict(PIXEL_DICT))
         elif call.data == 'mirror':
             bot.send_message(call.message.chat.id, '👇 Выберите тип отражения 👇', parse_mode='HTML',
-                             reply_markup=get_mirror_keyboard())
+                             reply_markup=get_inline_keyboard_from_dict(MIRROR_DICT))
         elif call.data == 'solarize':
             bot.answer_callback_query(call.id, 'Соляризация вашего изображения...')
             solarize_and_send(call.message, bot)
@@ -69,11 +91,14 @@ def callback_query(call: CallbackQuery):
             bot.answer_callback_query(call.id, 'Преобразование градации серого...')
             grayscale_and_send(call.message, bot)
         elif call.data == 'sticker':
-            bot.answer_callback_query(call.id, 'Формирование стикера...')
-            sticker_and_send(call.message, bot)
+            bot.send_message(
+                chat_id=call.message.chat.id,
+                text=TRANSPARENT_TEXT,
+                parse_mode='HTML',
+                reply_markup=get_inline_keyboard_from_dict(TRANSPARENT_DICT)
+            )
     except Exception as er:
-        bot.send_message(call.message.chat.id, 'Ошибка. Начните все сначала.')
-        raise
+        bot.send_message(call.message.chat.id, ERROR_TEXT)
 
 
 def pixel_query(call: CallbackQuery):
@@ -86,7 +111,7 @@ def pixel_query(call: CallbackQuery):
         # bot.delete_message(call.message.chat.id, call.message.id)
         pixelate_and_send(call.message, bot, PIXEL_DICT[call.data])
     except Exception as er:
-        bot.send_message(call.message.chat.id, 'Ошибка. Начните все сначала.')
+        bot.send_message(call.message.chat.id, ERROR_TEXT)
 
 
 def mirror_query(call: CallbackQuery):
@@ -96,10 +121,21 @@ def mirror_query(call: CallbackQuery):
     """
     try:
         bot.answer_callback_query(call.id, 'Отражение вашего изображения...')
-        # bot.delete_message(call.message.chat.id, call.message.id)
         mirror_and_send(call.message, bot, int(call.data[2:]))
     except Exception as er:
-        bot.send_message(call.message.chat.id, 'Ошибка. Начните все сначала.')
+        bot.send_message(call.message.chat.id, ERROR_TEXT)
+
+
+def transparent_query(call: CallbackQuery):
+    """
+    Определяет размер допуска прозрачности фона
+    bbot.callback_query_handler(func=lambda call: call.data in TRANSPARENT_DICT)(transparent_query)
+    """
+    try:
+        bot.answer_callback_query(call.id, 'Формирование стикера...')
+        sticker_and_send(call.message, bot, allowance=TRANSPARENT_DICT[call.data])
+    except Exception as er:
+        bot.send_message(call.message.chat.id, ERROR_TEXT)
 
 
 def ascii_step2(message: Message, call: CallbackQuery, bot: telebot.TeleBot):
@@ -121,7 +157,17 @@ def send_welcome(message: Message):
     Обработчик приветствия
     bot.message_handler(commands=['start', 'help'])
     """
-    bot.reply_to(message, WELCOME_TEXT, parse_mode='HTML', reply_markup=get_start_keyboard())
+    print(f'К нам пришел @{message.chat.username} ({message.chat.first_name})')
+    bot.reply_to(message, WELCOME_TEXT, parse_mode='HTML', reply_markup=get_reply_keyboard_from_dict(START_KB_DICT))
+
+
+def any_text(message: Message):
+    """
+    Обработчик приветствия
+    bot.message_handler(commands=['start', 'help'])
+    """
+    print(f'К нам пришел @{message.chat.username} ({message.chat.first_name})')
+    bot.reply_to(message, UNDERSTAND_TEXT, parse_mode='HTML', reply_markup=get_reply_keyboard_from_dict(START_KB_DICT))
 
 
 def handle_photo(message: Message):
