@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, choice
 import telebot
 from telebot.types import CallbackQuery, Message
 
@@ -7,7 +7,7 @@ from keyboards.generate_kb import get_reply_keyboard_from_dict, get_inline_keybo
 from settings import (
     ASCII_TEXT, WELCOME_TEXT, IMAGE_TEXT, user_states, ASCII_CHARS, PIXEL_DICT, JOKES,
     IMAGE_GEN_TEXT, ERROR_TEXT, START_KB_DICT, MIRROR_DICT, TRANSPARENT_DICT, TRANSPARENT_TEXT,
-    UNDERSTAND_TEXT, COMPLIMENTS, FRAME_COMPLIMENTS, CANCEL_TEXT
+    UNDERSTAND_TEXT, COMPLIMENTS, FRAME_COMPLIMENTS, CANCEL_TEXT, COIN_DICT
 )
 from utilities.processing_img import (
     pixelate_and_send, solarize_and_send, ascii_and_send, invert_and_send, mirror_and_send,
@@ -41,6 +41,9 @@ def start_query(call: CallbackQuery | Message):
                     COMPLIMENTS[randint(0, len(COMPLIMENTS) - 1)] +
                     '</b>' + FRAME_COMPLIMENTS)
             bot.send_message(message.chat.id, text=comp, parse_mode='HTML')
+        elif text == START_KB_DICT['coin']:
+            coin = f'Вам выпало: <b>{choice(COIN_DICT)}</b>'
+            bot.send_message(message.chat.id, text=coin, parse_mode='HTML')
         elif text == START_KB_DICT['gen_image']:
             msg = bot.send_message(message.chat.id, IMAGE_GEN_TEXT, parse_mode='HTML')
             bot.register_next_step_handler(msg, gen_step2, message, bot)
