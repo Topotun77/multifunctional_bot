@@ -64,3 +64,19 @@
 ![img16](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n016.JPG?raw=true)
 ### Игра подбрасывание монетки:
 ![img17](https://github.com/Topotun77/multifunctional_bot/blob/master/ScreenShots/n019.JPG?raw=true)
+
+
+## Для запуска:
+1. Установите все необходимые зависимости, выполнив команду:  
+```
+pip install -r requirements.txt
+```
+2. Настройте переменные окружения. Вам нужно определить следующие значения:
+- `TOKEN` - токен для доступа к Вашему телеграм-боту. 
+Его можно получить здесь: https://t.me/BotFather
+- `API_KEY` и `SECRET_KEY` - API-ключи доступа к сервису Kandinsky. 
+Для получения ключей нужно зарегистрироваться на [Fusion Brain](https://fusionbrain.ai/)
+3. Запустить бота командой:
+```
+python main.py
+```
