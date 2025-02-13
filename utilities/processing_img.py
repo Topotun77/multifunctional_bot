@@ -56,13 +56,17 @@ def generate_and_send(message: Message, bot: telebot.TeleBot):
         print(f'Ошибка: {er.args}')
         return
 
+    if image is None:
+        bot.reply_to(message, 'Печалька! Не дождались', parse_mode='HTML')
+        return
+
     # Создаем файловый объект из байтовых данных
     image_file = io.BytesIO(image)
 
     # Открываем изображение с помощью Pillow
     image_out = Image.open(image_file)
 
-    msg = bot.send_photo(message.chat.id, image_out, reply_markup=get_options_keyboard())
+    msg = bot.send_photo(message.chat.id, image_out, caption=message.text, reply_markup=get_options_keyboard())
 
     # Добавить картинку в user_states
     user_states[message.chat.id] = {'photo': msg.photo[-1].file_id}

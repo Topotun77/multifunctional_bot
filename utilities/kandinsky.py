@@ -73,6 +73,7 @@ class Text2ImageAPI:
             # await time.sleep(delay)
             print('ожидаем....')
             await asyncio.sleep(delay)
+        return None
 
 
 async def gen(prom: str, attempts=10):
@@ -88,6 +89,9 @@ async def gen(prom: str, attempts=10):
     model_id = api.get_model()
     uuid = api.generate(prom, model_id)
     images = await api.check_generation(uuid, attempts=attempts)
+
+    if images is None:
+        return None
 
     # Здесь image_base64 - это строка с данными изображения в формате base64
     image_base64 = images[0]
