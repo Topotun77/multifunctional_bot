@@ -1,4 +1,4 @@
-import asyncio
+from threading import Thread
 import io
 
 import telebot
@@ -45,19 +45,21 @@ def send_image(message: Message, bot: telebot.TeleBot, image: Image.Image,
     else:
         bot.send_photo(message.chat.id, output_stream)
 
-
-def generate_and_send(message: Message, bot: telebot.TeleBot):
+def process_generate_and_send(message: Message, bot: telebot.TeleBot):
     """
-    Сгенерировать изображение через API Kamdinsky и отправить пользователю.
+    Поток
+    Сгенерировать изображение через API Kandinsky и отправить пользователю.
     """
     try:
-        image = asyncio.run(gen(message.text.replace("\n", " "), attempts=20))
+        # image = asyncio.run(gen(message.text.replace("\n", " "), attempts=25))
+        image = gen(message.text.replace("\n", " "), attempts=25)
     except Exception as er:
         print(f'Ошибка: {er.args}')
+        bot.reply_to(message, '❌ Вы дали мне не то! Совершенно не то! (((', parse_mode='HTML')
         return
 
     if image is None:
-        bot.reply_to(message, 'Печалька! Не дождались', parse_mode='HTML')
+        bot.reply_to(message, '❌ Печалька! Не дождались (((', parse_mode='HTML')
         return
 
     # Создаем файловый объект из байтовых данных
@@ -70,6 +72,14 @@ def generate_and_send(message: Message, bot: telebot.TeleBot):
 
     # Добавить картинку в user_states
     user_states[message.chat.id] = {'photo': msg.photo[-1].file_id}
+
+
+def generate_and_send(message: Message, bot: telebot.TeleBot):
+    """
+    Сгенерировать изображение через API Kandinsky и отправить пользователю.
+    """
+    Thread(target=process_generate_and_send, args=(message, bot)).start()
+
 
 def pixelate_and_send(message: Message, bot: telebot.TeleBot, pixel_size=20):
     """

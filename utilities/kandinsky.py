@@ -1,8 +1,8 @@
+import time
 import requests
 
 import json
 import base64
-import asyncio
 
 import os
 
@@ -56,7 +56,7 @@ class Text2ImageAPI:
         data = response.json()
         return data['uuid']
 
-    async def check_generation(self, request_id, attempts=10, delay=10):
+    def check_generation(self, request_id, attempts=10, delay=10):
         """
         Проверка и ожидание готовности генерации
         :param request_id: id запроса
@@ -70,13 +70,13 @@ class Text2ImageAPI:
                 return data['images']
 
             attempts -= 1
-            # await time.sleep(delay)
+            time.sleep(delay)
             print('ожидаем....')
-            await asyncio.sleep(delay)
+            # await asyncio.sleep(delay)
         return None
 
 
-async def gen(prom: str, attempts=10):
+def gen(prom: str, attempts=10):
     """
     Генерация картинки через API Kandinsky
     :param attempts: Количество попыток проверки
@@ -88,7 +88,8 @@ async def gen(prom: str, attempts=10):
     api = Text2ImageAPI('https://api-key.fusionbrain.ai/', API_KEY, SECRET_KEY)
     model_id = api.get_model()
     uuid = api.generate(prom, model_id)
-    images = await api.check_generation(uuid, attempts=attempts)
+    # images = asyncio.run(api.check_generation(uuid, attempts=attempts))
+    images = api.check_generation(uuid, attempts=attempts)
 
     if images is None:
         return None
