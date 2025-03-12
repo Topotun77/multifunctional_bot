@@ -166,8 +166,8 @@ def send_welcome(message: Message):
 
 def any_text(message: Message):
     """
-    Обработчик приветствия
-    bot.message_handler(commands=['start', 'help'])
+    Обработчик, если не подошел ни один из предыдущих методов
+    bot.message_handler()(any_text)
     """
     print(f'К нам пришел @{message.chat.username} ({message.chat.first_name})')
     bot.reply_to(message, UNDERSTAND_TEXT, parse_mode='HTML', reply_markup=get_reply_keyboard_from_dict(START_KB_DICT))
